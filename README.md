@@ -1,6 +1,8 @@
 # mprpc
 
-一个基于 `muduo + protobuf + ZooKeeper` 的轻量级分布式 RPC 框架示例项目，包含：
+一个基于 `muduo + protobuf + ZooKeeper` 的轻量级分布式 RPC 框架示例项目。
+
+仓库当前包含：
 
 - 框架静态库 `libmprpc`
 - 服务提供者示例 `provider`
