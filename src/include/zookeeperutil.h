@@ -1,6 +1,10 @@
 #pragma once
-#include <zookeeper/zookeeper.h>
+
+#include <condition_variable>
+#include <mutex>
 #include <string>
+#include <vector>
+#include <zookeeper/zookeeper.h>
 
 class ZkClient
 {
@@ -8,16 +12,16 @@ public:
     ZkClient();
     ~ZkClient();
 
-    // 连接 zookeeper server
-    void Start();
-
-    // 在 zookeeper 上创建节点
-    // path: 节点路径  data: 节点数据  state: 节点类型
-    void Create(const char *path, const char *data, int datalen, int state = 0);
-
-    // 获取节点的值
-    std::string GetData(const char *path);
+    bool Start();
+    bool Create(const std::string &path, const std::string &data = "", int state = 0);
+    std::string GetData(const std::string &path);
+    std::vector<std::string> GetChildren(const std::string &path);
 
 private:
-    zhandle_t *m_zhandle; // zookeeper 客户端句柄
+    friend void GlobalWatcher(zhandle_t *zh, int type, int state, const char *path, void *watcherCtx);
+
+    zhandle_t *m_zhandle;
+    std::mutex m_mutex;
+    std::condition_variable m_connectedCv;
+    bool m_connected;
 };
